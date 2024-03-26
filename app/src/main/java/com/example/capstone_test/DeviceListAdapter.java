@@ -1,6 +1,7 @@
 package com.example.capstone_test;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,16 @@ public class DeviceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // Assign device name to the recycler view
         ViewHolder itemHolder = (ViewHolder) holder;
         itemHolder.textName.setText(deviceName);
+
+        // Return to Main Screen when a device name is selected
+        itemHolder.textName.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("deviceAddress", deviceAddress);
+                context.startActivity(intent);
+            }
+        });
     }
 
     public int getItemCount(){
