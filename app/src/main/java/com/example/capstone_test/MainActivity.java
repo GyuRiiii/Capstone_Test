@@ -17,6 +17,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public static Handler handler;
     public static BluetoothSocket mmSocket;
     public static CreateConnectThread createConnectThread;
+    public static ConnectedThread connectedThread;
 
     private final static int CONNECTION_STATUS = 1;
     private final static int MESSAGE_READ = 2;
@@ -92,12 +96,38 @@ public class MainActivity extends AppCompatActivity {
 
                     // If the message contains data from Arduino board
                     case MESSAGE_READ:
-                        // Code will be completed in the next video
+                        String statusText = msg.obj.toString().replace("\n", "");
+                        ledStatus.setText(statusText);
                         break;
                 }
             }
         };
+        // Turn On Button
+        buttonOn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String androidCmd = "w";
+                connectedThread.write(androidCmd);
+            }
+        });
 
+        // Turn Off Button
+        buttonOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String androidCmd = "s";
+                connectedThread.write(androidCmd);
+            }
+        });
+
+        // Blinking Button
+        buttonBlink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String androidCmd = "d";
+                connectedThread.write(androidCmd);
+            }
+        });
     }
 
     /* ======== Thread 1 ========*/
@@ -134,6 +164,10 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException closeException) {}
                     return;
                 }
+
+                connectedThread = new ConnectedThread(mmSocket);
+                connectedThread.run();
+
             } catch (SecurityException e){
                 e.printStackTrace();
             }
@@ -145,4 +179,51 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e){}
         }
     }
+
+    /* ======== Thread 2 ========*/
+    public static class ConnectedThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public ConnectedThread(BluetoothSocket socket){
+            mmSocket = socket;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+            try {
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e){}
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[1024];
+            int bytes = 0;
+            while (true) {
+                try {
+                    buffer[bytes] = (byte) mmInStream.read();
+                    String arduinoMsg = null;
+                    if (buffer[bytes] == '\n'){
+                        arduinoMsg = new String(buffer, 0, bytes);
+                        handler.obtainMessage(MESSAGE_READ, arduinoMsg).sendToTarget();
+                        bytes=0;
+                    } else {
+                        bytes++;
+                    }
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+
+        public void write(String input) {
+            byte[] bytes = input.getBytes();
+            try {
+                mmOutStream.write(bytes);
+            }catch (IOException e) {}
+        }
+    }
+
 }
