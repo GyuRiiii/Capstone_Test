@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     tmp = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
                 } catch (IOException e) {
-                    Log.e("Eroor Message", e.toString());
+                    Log.e("Error Message", e.toString());
                 }
             } catch (SecurityException e){
                 e.printStackTrace();
@@ -225,5 +225,4 @@ public class MainActivity extends AppCompatActivity {
             }catch (IOException e) {}
         }
     }
-
 }
