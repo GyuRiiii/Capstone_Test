@@ -1,11 +1,14 @@
 package com.example.capstone_test;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.nfc.cardemulation.HostNfcFService;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+
+import android.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,15 +58,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SelectDeviceActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        // Code for the "Disconnect" button
-        buttonDisconnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createConnectThread.cancel();
-                bluetoothStatus.setText("Bluetooth is Disconnected");
             }
         });
 
@@ -102,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        // Code for the "Disconnect" button
+        buttonDisconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createConnectThread.cancel();
+                bluetoothStatus.setText("Bluetooth is Disconnected");
+            }
+        });
+
         // Turn On Button
         buttonOn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,18 +142,22 @@ public class MainActivity extends AppCompatActivity {
         public CreateConnectThread(BluetoothAdapter bluetoothAdapter, String address) {
             BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(address);
             BluetoothSocket tmp = null;
+            System.out.println(bluetoothDevice);
+//            Log.e("Eroor Message", e.toString());
             try {
                 UUID uuid = bluetoothDevice.getUuids()[0].getUuid();
+                System.out.println(uuid);
                 try {
                     tmp = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
                 } catch (IOException e) {
                     Log.e("Eroor Message", e.toString());
                 }
+                mmSocket = tmp;
             } catch (SecurityException e){
                 e.printStackTrace();
             }
 
-            mmSocket = tmp;
+//            mmSocket = tmp;
         }
 
         public void run() {

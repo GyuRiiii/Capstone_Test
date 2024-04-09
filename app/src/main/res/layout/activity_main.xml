@@ -61,24 +61,24 @@
             android:id="@+id/textLedStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LED is OFF" />
+            android:text="Motor is OFF" />
 
         <Button
             android:id="@+id/buttonOn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Turn ON" />
+            android:text="Servo to 180 degrees" />
 
         <Button
             android:id="@+id/buttonOff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Turn OFF" />
+            android:text="Servo to 0 degrees" />
 
         <Button
             android:id="@+id/buttonBlink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Blinking" />
+            android:text="Servo in a pattern" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

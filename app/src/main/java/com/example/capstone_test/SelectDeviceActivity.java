@@ -32,6 +32,7 @@ public class SelectDeviceActivity extends AppCompatActivity {
             List<Object> deviceList = new ArrayList<>();
             for (BluetoothDevice device : pairedDevices){ // extract the name and hardware address for every device in cache using For statement
                 String deviceName = device.getName();
+                System.out.println(deviceName);
                 String deviceHardwareAddress = device.getAddress();
                 DeviceInfoModel deviceInfoModel = new DeviceInfoModel(deviceName, deviceHardwareAddress); // data model or data template that we will use to make the structured data object
                 deviceList.add(deviceInfoModel);
@@ -46,6 +47,5 @@ public class SelectDeviceActivity extends AppCompatActivity {
         } catch(SecurityException e){
             e.printStackTrace();
         }
-
     }
 }
