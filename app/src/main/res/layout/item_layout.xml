@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"> <!-- 존나웃기네 이거를 match_parent로 해놔서 한줄밖에 안뜬거임?ㅋㅋㅋㅋㅋ시발 -->
+    android:layout_height="wrap_content"> <!-- 이거를 match_parent로 해놔서 한줄밖에 안뜬거?-->
 
 <!--    <TextView-->
 <!--        android:id="@+id/textItem"-->
